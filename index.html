@@ -36,13 +36,19 @@
       border-radius: 10px;
     }
 
-    .category {
+    .dropdown-container {
+      text-align: center;
       margin-top: 40px;
     }
 
-    .category h2 {
-      font-size: 1.5rem;
-      text-align: center;
+    select {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 16px;
+      border: none;
+      width: 200px;
     }
 
     .video-row {
@@ -50,6 +56,7 @@
       justify-content: center;
       overflow-x: auto;
       padding: 10px;
+      margin-top: 20px;
     }
 
     .video-item {
@@ -88,39 +95,57 @@
     </video>
   </div>
 
-  <!-- Categories -->
-  <div class="category">
-    <h2>Action Movies</h2>
-    <div class="video-row">
-      <!-- Action Movie Thumbnails -->
-      <div class="video-item" onclick="loadVideo('1XyZg123ABCxyz456')">
-        <img src="action1.jpg" alt="Action 1">
-      </div>
-      <div class="video-item" onclick="loadVideo('2XyZg123ABCxyz456')">
-        <img src="action2.jpg" alt="Action 2">
-      </div>
-      <!-- Add more action movie thumbnails -->
-    </div>
+  <!-- Dropdown Category Selector -->
+  <div class="dropdown-container">
+    <select id="categorySelector" onchange="loadCategoryVideos()">
+      <option value="" disabled selected>Select a category</option>
+      <option value="action">Action Movies</option>
+      <option value="comedy">Comedy Movies</option>
+      <option value="drama">Drama Movies</option>
+    </select>
   </div>
 
-  <div class="category">
-    <h2>Comedy Movies</h2>
-    <div class="video-row">
-      <!-- Comedy Movie Thumbnails -->
-      <div class="video-item" onclick="loadVideo('3XyZg123ABCxyz456')">
-        <img src="comedy1.jpg" alt="Comedy 1">
-      </div>
-      <div class="video-item" onclick="loadVideo('4XyZg123ABCxyz456')">
-        <img src="comedy2.jpg" alt="Comedy 2">
-      </div>
-      <!-- Add more comedy movie thumbnails -->
-    </div>
+  <!-- Video Thumbnails Container -->
+  <div id="videoContainer" class="video-row">
+    <!-- Video thumbnails will appear here -->
   </div>
-
-  <!-- Add more categories as needed -->
 
   <script>
-    // Function to change video source
+    const videoCategories = {
+      action: [
+        { id: '1XyZg123ABCxyz456', title: 'Action Movie 1', thumbnail: 'action1.jpg' },
+        { id: '2XyZg123ABCxyz456', title: 'Action Movie 2', thumbnail: 'action2.jpg' }
+      ],
+      comedy: [
+        { id: '3XyZg123ABCxyz456', title: 'Comedy Movie 1', thumbnail: 'comedy1.jpg' },
+        { id: '4XyZg123ABCxyz456', title: 'Comedy Movie 2', thumbnail: 'comedy2.jpg' }
+      ],
+      drama: [
+        { id: '5XyZg123ABCxyz456', title: 'Drama Movie 1', thumbnail: 'drama1.jpg' },
+        { id: '6XyZg123ABCxyz456', title: 'Drama Movie 2', thumbnail: 'drama2.jpg' }
+      ]
+    };
+
+    // Function to load videos based on selected category
+    function loadCategoryVideos() {
+      const category = document.getElementById('categorySelector').value;
+      const videoContainer = document.getElementById('videoContainer');
+      videoContainer.innerHTML = '';  // Clear previous videos
+
+      if (category && videoCategories[category]) {
+        videoCategories[category].forEach(video => {
+          const videoItem = document.createElement('div');
+          videoItem.classList.add('video-item');
+          videoItem.onclick = function() {
+            loadVideo(video.id);
+          };
+          videoItem.innerHTML = `<img src="${video.thumbnail}" alt="${video.title}">`;
+          videoContainer.appendChild(videoItem);
+        });
+      }
+    }
+
+    // Function to load and play selected video
     function loadVideo(fileId) {
       const videoPlayer = document.getElementById('videoPlayer');
       const videoSource = document.getElementById('videoSource');
